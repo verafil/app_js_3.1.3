@@ -1,10 +1,10 @@
 
-INSERT INTO `users` (`id`, `login`, `password`, `age`)
+INSERT INTO `users` (`id`, `username`, `password`, `last_name`, `name`, `age`)
 VALUES
-(1,'admin','$2a$10$4C9cIxe0DAizDrd2mVr2fe7iZUKwZHNaF1up/S/KIPYj/LoryXuWq', 33),
-(2,'user','$2a$10$uwfm.HjKXsStiR.49dsUO.I.JkDsR.26jSXwo3wEL8HYv06Wn3NM2', 33);
+(1,'admin','$2a$12$LJmVZcm7g/dl4fII16sUN.eFp2h0j8NjOmtwQ3fzx2O.QXElsyA6O', 'vera', 'olegovna', 33),
+(2,'user','$2a$12$LJmVZcm7g/dl4fII16sUN.eFp2h0j8NjOmtwQ3fzx2O.QXElsyA6O', 'sergey', 'sergeevich', 33);
 
-INSERT INTO `roles` (`id`, `role`)
+INSERT INTO `roles` (`id`, `name`)
 VALUES
 (1,'ROLE_ADMIN'),
 (2,'ROLE_USER');

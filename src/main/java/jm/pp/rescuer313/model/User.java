@@ -1,13 +1,7 @@
 package jm.pp.rescuer313.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import javax.validation.constraints.NotEmpty;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -16,84 +10,46 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
-    @Column(name = "login")
-    @NotEmpty(message = "login should not empty")
-    private String login;
+    @Column(unique = true)
+    private String username;
 
-    @Column(name = "password")
-    @NotEmpty(message = "password should not empty")
+    @Column
     private String password;
 
-    @Column(name = "age")
-    private int age;
+    @Column
+    private String name;
 
-//  @JsonIgnoreProperties("users")
-//  @JsonManagedReference
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id"
-    )
+    @Column
+    private String lastName;
+
+    @Column
+    private Integer age;
+
+    @ManyToMany(cascade=CascadeType.MERGE, fetch = FetchType.EAGER)
     private Set<Role> roles;
 
-    public Long getId() {
-        return id;
+    public User() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public void setPassword(String password) {
+    public User(String username, String password, String name, String lastName, Integer age,Set<Role> roles) {
+        this.username = username;
         this.password = password;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
+        this.name = name;
+        this.lastName = lastName;
+        this.roles = roles;
         this.age = age;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public int getId() {
+        return id;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
     public String getUsername() {
-        return login;
+        return username;
     }
 
     @Override
@@ -115,4 +71,59 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public Integer getAge() {return age;}
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public void setAge(Integer age) {this.age = age;}
+
+    public static String toStringRoles(Set<Role> roles) {
+        return roles.toString().replaceAll("[\\]\\[]", "");
+    }
+
+
 }

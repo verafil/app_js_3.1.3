@@ -14,6 +14,7 @@ const userFetchService = {
     },
     // bodyAdd : async function(user) {return {'method': 'POST', 'headers': this.head, 'body': user}},
     findAllUsers: async () => await fetch('api/users'),
+    findAllRoles: async () => await fetch('api/roles'),
     findOneUser: async (id) => await fetch(`api/users/${id}`),
     addNewUser: async (user) => await fetch('api/users', {method: 'POST', headers: userFetchService.head, body: JSON.stringify(user)}),
     updateUser: async (user, id) => await fetch(`api/users/${id}`, {method: 'PUT', headers: userFetchService.head, body: JSON.stringify(user)}),
@@ -21,26 +22,32 @@ const userFetchService = {
 }
 
 async function getTableWithUsers() {
-    let table = $('#mainTableWithUsers tbody');
+    let table = $('#adminTable tbody');
     table.empty();
 
     await userFetchService.findAllUsers()
         .then(res => res.json())
         .then(users => {
             users.forEach(user => {
+                let userRoles = ""
+                user.roles.forEach((r) => {
+                    userRoles += r.name.replace('ROLE_', '') + ' '
+                })
                 let tableFilling = `$(
                         <tr>
                             <td>${user.id}</td>
-                            <td>${user.login}</td>
-                            <td>${user.password.slice(0, 15)}...</td>
-                            <td>${user.age}</td>     
+                            <td>${user.username}</td>
+                            <td>${user.lastName}</td>
+                            <td>${user.name}</td>
+                            <td>${user.age}</td>  
+                            <td>${userRoles}</td>    
+                               <td>
+                                <button data-userid="${user.id}" data-action="edit" class="btn btn-primary eBtn" 
+                                data-toggle="modal" data-target="#someDefaultModal">Edit</button>
+                             </td>
                             <td>
-                                <button type="button" data-userid="${user.id}" data-action="edit" class="btn btn-outline-secondary" 
-                                data-toggle="modal" data-target="#someDefaultModal"></button>
-                            </td>
-                            <td>
-                                <button type="button" data-userid="${user.id}" data-action="delete" class="btn btn-outline-danger" 
-                                data-toggle="modal" data-target="#someDefaultModal"></button>
+                               <button data-userid="${user.id}" data-action="delete" class="btn bg-danger eBtn" 
+                               data-toggle="modal" data-target="#someDefaultModal">Delete</button>
                             </td>
                         </tr>
                 )`;
@@ -50,7 +57,7 @@ async function getTableWithUsers() {
 
     // обрабатываем нажатие на любую из кнопок edit или delete
     // достаем из нее данные и отдаем модалке, которую к тому же открываем
-    $("#mainTableWithUsers").find('button').on('click', (event) => {
+    $("#adminTable").find('button').on('click', (event) => {
         let defaultModal = $('#someDefaultModal');
 
         let targetButton = $(event.target);
@@ -108,11 +115,12 @@ async function getDefaultModal() {
     })
 }
 
-
-// редактируем юзера из модалки редактирования, забираем данные, отправляем
 async function editUser(modal, id) {
     let preuser = await userFetchService.findOneUser(id);
     let user = preuser.json();
+
+    let rolesInBase = await userFetchService.findAllRoles();
+    let roles = rolesInBase.json();
 
     modal.find('.modal-title').html('Edit user');
 
@@ -121,27 +129,52 @@ async function editUser(modal, id) {
     modal.find('.modal-footer').append(editButton);
     modal.find('.modal-footer').append(closeButton);
 
+    //let selectRoles = `<select multiple class="form-control" id="rolesEdit" name="roles">
+//`
+    roles.then(rolesObject => {
+        let selectRoles = `<select multiple class="form-control" id="rolesEdit" name="roles">`
+        rolesObject.forEach(r => {
+           //  let nameLabel = r.name.replace('ROLE_', '')
+             selectRoles += `$(
+                 <option value="${r.name}">"${r.name.replace('ROLE_', '')}"</option>     
+                 )`
+        })
+        modal.find('.modal-body').append(selectRoles);
+    })
+
+   // selectRoles += `</select>`
+
     user.then(user => {
         let bodyForm = `
-            <form class="form-group" id="editUser">
-                <input type="text" class="form-control" id="id" name="id" value="${user.id}" disabled><br>
-                <input class="form-control" type="text" id="login" value="${user.login}"><br>
+              <form class="form-group" id="editUser">
+                <input type="text" class="form-control" id="id" name="id" value="${user.id}" disabled><br>              
+                <input class="form-control" type="text" id="username" value="${user.username}"><br>
                 <input class="form-control" type="password" id="password"><br>
-                <input class="form-control" id="age" type="number" value="${user.age}">
+                <input class="form-control" type="text" id="name" value="${user.name}"><br>
+                <input class="form-control" type="text" id="lastName" value="${user.lastName}"><br>
+                <input class="form-control" id="age" type="number" value="${user.age}"><br> 
+<!--                <input class="form-control" id="role" type="text" value="${rolesInBase}"><br>           -->
             </form>
         `;
         modal.find('.modal-body').append(bodyForm);
+        // modal.find('.modal-body').append(selectRoles);
     })
 
     $("#editButton").on('click', async () => {
         let id = modal.find("#id").val().trim();
-        let login = modal.find("#login").val().trim();
-        let password = modal.find("#password").val().trim();
+        let username = modal.find("#username").val().trim();
+        let name = modal.find("#name").val().trim();
+        let lastName = modal.find("#lastName").val().trim();
         let age = modal.find("#age").val().trim();
+        let password = modal.find("#password").val().trim();
+        let roles = modal.find("#rolesEdit").val();
         let data = {
             id: id,
-            login: login,
+            username: username,
+            name: name,
+            lastName: lastName,
             password: password,
+            roles: roles,
             age: age
         }
         const response = await userFetchService.updateUser(data, id);
@@ -162,21 +195,47 @@ async function editUser(modal, id) {
     })
 }
 
-
-// удаляем юзера из модалки удаления
 async function deleteUser(modal, id) {
-    await userFetchService.deleteUser(id);
-    getTableWithUsers();
-    modal.find('.modal-title').html('');
-    modal.find('.modal-body').html('User was deleted');
+
+    let preuser = await userFetchService.findOneUser(id);
+    let user = preuser.json();
+
+    modal.find('.modal-title').html('Delete user');
+
+    let deleteButton = `<button  class="btn btn-outline-success" id="deleteButton">Delete</button>`
     let closeButton = `<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>`
+    modal.find('.modal-footer').append(deleteButton);
     modal.find('.modal-footer').append(closeButton);
+
+    user.then(user => {
+        let userRoles = ''
+        user.roles.forEach((r) => {
+            userRoles += r.name.replace('ROLE_', '') + ' '
+        })
+        let bodyForm = `
+            <form class="form-group" id="editUser">
+                <input type="text" class="form-control" id="id" name="id" value="${user.id}" disabled><br>              
+                <input class="form-control" type="text" id="username" value="${user.username} " disabled><br>
+                <input class="form-control" type="password" id="password" disabled><br>
+                <input class="form-control" type="text" id="name" value="${user.name}" disabled><br>
+                <input class="form-control" type="text" id="lastName" value="${user.lastName}" disabled><br>
+                <input class="form-control" type="text" id="roles" value="${userRoles}" disabled><br>
+                <input class="form-control" id="age" type="number" value="${user.age}" disabled><br>  
+            
+            </form>
+        `;
+        modal.find('.modal-body').append(bodyForm);
+    })
+
+    $("#deleteButton").on('click', async () => {
+        let id = modal.find("#id").val().trim();
+        const response = await userFetchService.deleteUser(id);
+        if (response.ok) {
+            await getTableWithUsers();
+            modal.modal('hide');
+        }
+    })
 }
-
-
-
-
-
 
 async function addNewUser() {
     $('#addNewUserButton').click(async () =>  {

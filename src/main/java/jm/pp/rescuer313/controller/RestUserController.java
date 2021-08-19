@@ -2,6 +2,7 @@ package jm.pp.rescuer313.controller;
 
 import jm.pp.rescuer313.ExeptionHandler.DataInfoHandler;
 import jm.pp.rescuer313.ExeptionHandler.UserWithSuchLoginExist;
+import jm.pp.rescuer313.model.Role;
 import jm.pp.rescuer313.model.User;
 import jm.pp.rescuer313.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,8 +34,14 @@ public class RestUserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+    @GetMapping("/roles")
+    public ResponseEntity<List<Role>> apiGetAllRoles() {
+        List<Role> roles = userService.findAllRoles();
+        return new ResponseEntity<>(roles, HttpStatus.OK);
+    }
+
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> apiGetOneUser(@PathVariable("id") long id) {
+    public ResponseEntity<User> apiGetOneUser(@PathVariable("id") Integer id) {
         User user = userService.findUserById(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -70,7 +78,7 @@ public class RestUserController {
     }
 
     @DeleteMapping("users/{id}")
-    public ResponseEntity<DataInfoHandler> apiDeleteUser(@PathVariable("id") long id) {
+    public ResponseEntity<DataInfoHandler> apiDeleteUser(@PathVariable("id") Integer id) {
         userService.deleteUserById(id);
         return new ResponseEntity<>(new DataInfoHandler("User was deleted"), HttpStatus.OK);
     }

@@ -1,6 +1,5 @@
 package jm.pp.rescuer313.model;
 
-import com.fasterxml.jackson.annotation.*;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -12,46 +11,49 @@ public class Role implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private  Long id;
 
-    @Column(name = "role")
-    private String role;
+    private String name;
 
-//  @JsonIgnoreProperties("roles")
-//  @JsonBackReference
+    public Role() { }
+
+    public Role(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     @ManyToMany(mappedBy = "roles")
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id"
-    )
     private Set<User> users;
 
-    @Override
-    public String getAuthority() {
-        return role;
+    public Role(String name) {
+        this.name = name;
     }
 
-    public long getId() {
-        return id;
+    public Long getId() { return id; }
+
+    public String getRole() { return name; }
+
+    public void setId(Long id) { this.id = id; }
+
+    public void setRole(String role) { this.name = role; }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public Set<User> getUsers() {
-        return users;
+    public String getName() {
+        return name;
     }
 
     public void setUsers(Set<User> users) {
         this.users = users;
+    }
+
+    @Override
+    public String getAuthority() { return name; }
+
+    @Override
+    public String toString() {
+        return name.replace("ROLE_", "");
     }
 }
