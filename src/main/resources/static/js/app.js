@@ -5,14 +5,12 @@ $(async function () {
     addNewUser();
 })
 
-
 const userFetchService = {
     head: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Referer': null
     },
-    // bodyAdd : async function(user) {return {'method': 'POST', 'headers': this.head, 'body': user}},
     findAllUsers: async () => await fetch('api/users'),
     findAllRoles: async () => await fetch('api/roles'),
     findOneUser: async (id) => await fetch(`api/users/${id}`),
@@ -55,8 +53,6 @@ async function getTableWithUsers() {
             })
         })
 
-    // обрабатываем нажатие на любую из кнопок edit или delete
-    // достаем из нее данные и отдаем модалке, которую к тому же открываем
     $("#adminTable").find('button').on('click', (event) => {
         let defaultModal = $('#someDefaultModal');
 
@@ -69,7 +65,6 @@ async function getTableWithUsers() {
         defaultModal.modal('show');
     })
 }
-
 
 async function getNewUserForm() {
     let button = $(`#SliderNewUserForm`);
@@ -87,9 +82,6 @@ async function getNewUserForm() {
     })
 }
 
-
-// что то деалем при открытии модалки и при закрытии
-// основываясь на ее дата атрибутах
 async function getDefaultModal() {
     $('#someDefaultModal').modal({
         keyboard: true,
@@ -129,20 +121,15 @@ async function editUser(modal, id) {
     modal.find('.modal-footer').append(editButton);
     modal.find('.modal-footer').append(closeButton);
 
-    //let selectRoles = `<select multiple class="form-control" id="rolesEdit" name="roles">
-//`
     roles.then(rolesObject => {
         let selectRoles = `<select multiple class="form-control" id="rolesEdit" name="roles">`
         rolesObject.forEach(r => {
-           //  let nameLabel = r.name.replace('ROLE_', '')
              selectRoles += `$(
                  <option value="${r.name}">"${r.name.replace('ROLE_', '')}"</option>     
                  )`
         })
         modal.find('.modal-body').append(selectRoles);
     })
-
-   // selectRoles += `</select>`
 
     user.then(user => {
         let bodyForm = `
@@ -153,11 +140,9 @@ async function editUser(modal, id) {
                 <input class="form-control" type="text" id="name" value="${user.name}"><br>
                 <input class="form-control" type="text" id="lastName" value="${user.lastName}"><br>
                 <input class="form-control" id="age" type="number" value="${user.age}"><br> 
-<!--                <input class="form-control" id="role" type="text" value="${rolesInBase}"><br>           -->
             </form>
         `;
         modal.find('.modal-body').append(bodyForm);
-        // modal.find('.modal-body').append(selectRoles);
     })
 
     $("#editButton").on('click', async () => {
