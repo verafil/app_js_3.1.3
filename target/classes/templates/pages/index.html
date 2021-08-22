@@ -20,11 +20,17 @@
     </form>
 </nav>
 
+<!--<div id="aut" th:name="${#authentication.name}"></div>-->
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-1" style="background: white">
             <br>
             <nav class="list-group" id="list-group">
+<!--                <a href="admin" class="list-group-item list-group-item-action active">Admin</a>-->
+<!--                <td th:each="user : ${usersList}">-->
+<!--                    <a th:if="${#authentication.getName() == user.username}"-->
+<!--                       th:href="@{/user/{id}(id=${user.getId()})}"-->
+<!--                       class="list-group-item list-group-item-action">User</a>-->
                 </td>
             </nav>
         </div>
@@ -68,22 +74,14 @@
                             <div class="container-fluid">
                                 <div class="col-sm-3">
 
-                                    <form id="defaultSomeForm">
-                                        <input class="form-control" id="AddNewUserUsername" type="text"
-                                               placeholder="username"><br>
-                                        <input class="form-control" id="AddNewUserPassword" type="password"
-                                               placeholder="password"><br>
-                                        <input class="form-control" id="AddNewUserName" type="text"
-                                               placeholder="name"><br>
-                                        <input class="form-control" id="AddNewUserLastName" type="text"
-                                               placeholder="lastName"><br>
-                                        <input class="form-control" id="AddNewUserAge" type="number"
-                                               placeholder="age"><br>
-                                    </form>
-                                    <br>
-                                    <button class="btn btn-primary mb-2" type="button" id="addNewUserButton">Add new
-                                        user
-                                    </button>
+                                            <form id="defaultSomeForm">
+                                                <input class="form-control" id="AddNewUserUsername" type="text" placeholder="username"><br>
+                                                <input class="form-control" id="AddNewUserPassword" type="password" placeholder="password"><br>
+                                                <input class="form-control" id="AddNewUserName" type="text" placeholder="name"><br>
+                                                <input class="form-control" id="AddNewUserLastName" type="text" placeholder="lastName"><br>
+                                                <input class="form-control" id="AddNewUserAge" type="number" placeholder="age"><br>
+                                            </form><br>
+                                                <button class="btn btn-primary mb-2" type="button" id="addNewUserButton">Add new user</button>
                                 </div>
                             </div>
                         </h6>
@@ -95,8 +93,7 @@
 </div>
 
 <!--скрытое дефолтное модальное окно -->
-<div class="modal fade" id="someDefaultModal" tabindex="-1" role="dialog" aria-labelledby="someDefaultModalLabel"
-     aria-hidden="true">
+<div class="modal fade" id="someDefaultModal" tabindex="-1" role="dialog" aria-labelledby="someDefaultModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
 
