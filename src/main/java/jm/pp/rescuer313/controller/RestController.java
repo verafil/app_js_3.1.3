@@ -1,14 +1,10 @@
 package jm.pp.rescuer313.controller;
 
-import jm.pp.rescuer313.ExeptionHandler.DataInfoHandler;
-import jm.pp.rescuer313.ExeptionHandler.UserWithSuchLoginExist;
 import jm.pp.rescuer313.dto.UserDto;
 import jm.pp.rescuer313.model.Role;
 import jm.pp.rescuer313.model.User;
 import jm.pp.rescuer313.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api")
@@ -49,47 +44,24 @@ public class RestController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<DataInfoHandler> apiAddNewUser(@Valid @RequestBody UserDto user,
+    public ResponseEntity<?> apiAddNewUser(@Valid @RequestBody UserDto user,
                                                          BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            String error = getErrorsFromBindingResult(bindingResult);
-            return new ResponseEntity<>(new DataInfoHandler(error), HttpStatus.BAD_REQUEST);
-        }
-        try {
             userService.addNewUser(user);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (DataIntegrityViolationException e) {
-            throw new UserWithSuchLoginExist("User with such login Exist");
-        }
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<DataInfoHandler> apiUpdateUser(@PathVariable("id") long id,
+    public ResponseEntity<?> apiUpdateUser(@PathVariable("id") long id,
                                                          @RequestBody @Valid UserDto user,
                                                          BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            String error = getErrorsFromBindingResult(bindingResult);
-            return new ResponseEntity<>(new DataInfoHandler(error), HttpStatus.BAD_REQUEST);
-        }
-        try {
             userService.updateUser(user);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (DataIntegrityViolationException e) {
-            throw new UserWithSuchLoginExist("User with such login Exist");
-        }
     }
 
     @DeleteMapping("users/{id}")
-    public ResponseEntity<DataInfoHandler> apiDeleteUser(@PathVariable("id") Integer id) {
+    public ResponseEntity<?> apiDeleteUser(@PathVariable("id") Integer id) {
         userService.deleteUserById(id);
-        return new ResponseEntity<>(new DataInfoHandler("User was deleted"), HttpStatus.OK);
-    }
-
-    private String getErrorsFromBindingResult(BindingResult bindingResult) {
-        return bindingResult.getFieldErrors()
-                .stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .collect(Collectors.joining("; "));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

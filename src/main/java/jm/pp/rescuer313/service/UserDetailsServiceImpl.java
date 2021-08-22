@@ -1,7 +1,5 @@
 package jm.pp.rescuer313.service;
 
-import jm.pp.rescuer313.ExeptionHandler.NoUserWithSuchIdException;
-import jm.pp.rescuer313.ExeptionHandler.NoUserWithSuchLogin;
 import jm.pp.rescuer313.dao.RoleDao;
 import jm.pp.rescuer313.dao.UserDao;
 import jm.pp.rescuer313.dto.UserDto;
@@ -38,11 +36,7 @@ public class UserDetailsServiceImpl implements UserService, UserDetailsService {
     @Override
     public User findByUsername(String login) {
 
-        try {
             return userDao.findByUsername(login);
-        } catch (Exception e) {
-            throw new NoUserWithSuchLogin("There is not user with such login");
-        }
     }
 
     @Override
@@ -79,7 +73,7 @@ public class UserDetailsServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User findUserById(Integer id) {
-        return userDao.findById(id).orElseThrow(() -> new NoUserWithSuchIdException("User with such id does not exist"));
+        return userDao.findById(id).orElseThrow();
     }
 
     @Override
