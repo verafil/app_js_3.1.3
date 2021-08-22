@@ -1,9 +1,31 @@
 $(async function () {
+    await menu()
     await getTableWithUsers();
-    getNewUserForm();
     getDefaultModal();
     addNewUser();
 })
+
+async function menu() {
+    let list = $('#list-group');
+    let user_aut = document.getElementById("aut").innerText
+   // let uset_aut_id =''
+    user_aut = user_aut.substring(0, user_aut.indexOf(' '))
+    //alert(user_aut)
+    await userFetchService.findAllUsers()
+        .then(res => res.json())
+        .then(users => {
+            users.forEach(user => {
+                //alert('!')
+                if (user.username === user_aut) {
+                  let  user_aut_id = user.id
+                    list.append(`
+<a href="admin" class="list-group-item list-group-item-action active">Admin</a>
+<a href="/user/${user_aut_id}" class="list-group-item list-group-item-action">User</a>`)
+                }
+            })
+        })
+   // list.append(`$(<a href="@{/user/{id}(id=${uset_aut_id})}" class="list-group-item list-group-item-action active">User</a>`)
+}
 
 const userFetchService = {
     head: {
@@ -66,21 +88,10 @@ async function getTableWithUsers() {
     })
 }
 
-async function getNewUserForm() {
-    let button = $(`#SliderNewUserForm`);
-    let form = $(`#defaultSomeForm`)
-    button.on('click', () => {
-        if (form.attr("data-hidden") === "true") {
-            form.attr('data-hidden', 'false');
-            form.show();
-            button.text('Hide panel');
-        } else {
-            form.attr('data-hidden', 'true');
-            form.hide();
-            button.text('Show panel');
-        }
-    })
-}
+$('#navTabs a').on('click', function (e) {
+    e.preventDefault()
+    $(this).tab('show')
+})
 
 async function getDefaultModal() {
     $('#someDefaultModal').modal({
@@ -108,6 +119,7 @@ async function getDefaultModal() {
 }
 
 async function editUser(modal, id) {
+
     let preuser = await userFetchService.findOneUser(id);
     let user = preuser.json();
 
@@ -223,22 +235,46 @@ async function deleteUser(modal, id) {
 }
 
 async function addNewUser() {
+    let formNewUser = $('#defaultSomeForm');
+
+    let rolesInBase = await userFetchService.findAllRoles();
+    let roles = rolesInBase.json();
+
+    roles.then(rolesObject => {
+        let selectRoles = `<select multiple class="form-control" id="AddNewUserRoles" name="roles">`
+        rolesObject.forEach(r => {
+            selectRoles += `$(
+                 <option value="${r.name}">"${r.name.replace('ROLE_', '')}"</option>     
+                 )`
+        })
+        formNewUser.append(selectRoles);
+    })
+
     $('#addNewUserButton').click(async () =>  {
         let addUserForm = $('#defaultSomeForm')
-        let login = addUserForm.find('#AddNewUserLogin').val().trim();
+        let username = addUserForm.find('#AddNewUserUsername').val().trim();
         let password = addUserForm.find('#AddNewUserPassword').val().trim();
         let age = addUserForm.find('#AddNewUserAge').val().trim();
+        let name = addUserForm.find('#AddNewUserName').val().trim();
+        let lastName = addUserForm.find('#AddNewUserLastName').val().trim();
+        let roles = addUserForm.find('#AddNewUserRoles').val();
         let data = {
-            login: login,
+            username: username,
             password: password,
-            age: age
+            age: age,
+            roles: roles,
+            name: name,
+            lastName: lastName
         }
         const response = await userFetchService.addNewUser(data);
         if (response.ok) {
             getTableWithUsers();
-            addUserForm.find('#AddNewUserLogin').val('');
+            addUserForm.find('#AddNewUserUsername').val('');
             addUserForm.find('#AddNewUserPassword').val('');
             addUserForm.find('#AddNewUserAge').val('');
+            addUserForm.find('#AddNewUserName').val('');
+            addUserForm.find('#AddNewUserLastName').val('');
+            $('#navTabs a[href="#adminTable"]').tab('show')
         } else {
             let body = await response.json();
             let alert = `<div class="alert alert-danger alert-dismissible fade show col-12" role="alert" id="sharaBaraMessageError">
