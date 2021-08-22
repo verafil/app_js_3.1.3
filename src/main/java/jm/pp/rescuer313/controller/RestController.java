@@ -19,14 +19,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@RestController
+@org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api")
-public class RestUserController {
+public class RestController {
 
     private final UserService userService;
 
     @Autowired
-    public RestUserController(UserService userService) {
+    public RestController(UserService userService) {
         this.userService = userService;
     }
 
@@ -65,8 +65,8 @@ public class RestUserController {
 
     @PutMapping("/users/{id}")
     public ResponseEntity<DataInfoHandler> apiUpdateUser(@PathVariable("id") long id,
-                                              @RequestBody @Valid UserDto user,
-                                              BindingResult bindingResult) {
+                                                         @RequestBody @Valid UserDto user,
+                                                         BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String error = getErrorsFromBindingResult(bindingResult);
             return new ResponseEntity<>(new DataInfoHandler(error), HttpStatus.BAD_REQUEST);
