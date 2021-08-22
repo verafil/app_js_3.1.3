@@ -4,6 +4,7 @@ import jm.pp.rescuer313.ExeptionHandler.NoUserWithSuchIdException;
 import jm.pp.rescuer313.ExeptionHandler.NoUserWithSuchLogin;
 import jm.pp.rescuer313.dao.RoleDao;
 import jm.pp.rescuer313.dao.UserDao;
+import jm.pp.rescuer313.dto.UserDto;
 import jm.pp.rescuer313.model.Role;
 import jm.pp.rescuer313.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,8 +51,9 @@ public class UserDetailsServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void addNewUser(User user) {
-        user.setPassword(securityService.getCrypt(user.getPassword()));
+    public void addNewUser(UserDto userDto) {
+    //    user.setPassword(securityService.getCrypt(user.getPassword()));
+        User user = fromUserDtoToUser(userDto);
         userDao.save(user);
     }
 
@@ -64,8 +66,9 @@ public class UserDetailsServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void updateUser(User user) {
-        user.setPassword(securityService.getCrypt(user.getPassword()));
+    public void updateUser(UserDto userDto) {
+      //  user.setPassword(securityService.getCrypt(user.getPassword()));
+        User user = fromUserDtoToUser(userDto);
         userDao.save(user);
     }
 
@@ -82,5 +85,35 @@ public class UserDetailsServiceImpl implements UserService, UserDetailsService {
     @Override
     public void deleteUserById(Integer id) {
         userDao.deleteById(id);
+    }
+
+    private User fromUserDtoToUser(UserDto userDto) {
+        User user = new User();
+        user.setId(userDto.getId());
+        user.setUsername(userDto.getUsername());
+        if (userDto.getPassword().isEmpty()) {
+            user.setPassword(userDao.findById(userDto.getId()).get().getPassword());
+        } else {
+            user.setPassword(securityService.getCrypt(userDto.getPassword()));
+        }
+        user.setName(userDto.getName());
+        user.setLastName(userDto.getLastName());
+        user.setAge(userDto.getAge());
+
+        Set<Role> roles = new LinkedHashSet<>();
+        if (userDto.getRoles() != null) {
+            for (String roleName : userDto.getRoles()) {
+                Role roleInBase = roleDao.findByName(roleName);
+                if (roleInBase != null) {
+                    roles.add(roleInBase);
+                } else {
+                    roles.add(new Role(roleName));
+                }
+            }
+        } else {
+            roles = null;
+        }
+        user.setRoles(roles);
+        return user;
     }
 }

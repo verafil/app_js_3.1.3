@@ -13,23 +13,24 @@
 </head>
 <body>
 
-<nav class="navbar navbar-dark bg-dark">
+<nav class="navbar navbar-dark bg-dark" id="aut" th:name="${#authentication.name}">
     <a class="navbar-brand" th:text="${#authentication.name+' with roles: '+#authentication.authorities.toArray()}">Navbar</a>
     <form th:action="@{/logout}" method="post">
         <button type="submit" class="btn btn-dark">Logout</button>
     </form>
 </nav>
 
+<!--<div id="aut" th:name="${#authentication.name}"></div>-->
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-1" style="background: white">
             <br>
-            <nav class="list-group">
-                <a href="admin" class="list-group-item list-group-item-action active">Admin</a>
-                <td th:each="user : ${usersList}">
-                    <a th:if="${#authentication.getName() == user.username}"
-                       th:href="@{/user/{id}(id=${user.getId()})}"
-                       class="list-group-item list-group-item-action">User</a>
+            <nav class="list-group" id="list-group">
+<!--                <a href="admin" class="list-group-item list-group-item-action active">Admin</a>-->
+<!--                <td th:each="user : ${usersList}">-->
+<!--                    <a th:if="${#authentication.getName() == user.username}"-->
+<!--                       th:href="@{/user/{id}(id=${user.getId()})}"-->
+<!--                       class="list-group-item list-group-item-action">User</a>-->
                 </td>
             </nav>
         </div>
@@ -37,7 +38,7 @@
         <div class="col-sm-11">
             <br>
             <H2>Admin panel</H2>
-            <ul class="nav nav-tabs">
+            <ul class="nav nav-tabs" id="navTabs">
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#adminTable">Users table</a>
                 </li>
@@ -72,40 +73,15 @@
                         <h6>
                             <div class="container-fluid">
                                 <div class="col-sm-3">
-                                    <!--                                    <form action="#" th:action="@{/user-create}" th:object="${userDto}" method="post">-->
-                                    <!--                                        <div class="form-group">-->
-                                    <!--                                            <label for="name_create" class="form-control-label">Name:</label>-->
-                                    <!--                                            <input type="text" class="form-control" id="name_create" name="Name">-->
-                                    <!--                                        </div>-->
-                                    <!--                                        <div class="form-group">-->
-                                    <!--                                            <label for="lastName_create" class="form-control-label">Last name:</label>-->
-                                    <!--                                            <input type="text" class="form-control" id="lastName_create"-->
-                                    <!--                                                   name="lastName">-->
-                                    <!--                                        </div>-->
-                                    <!--                                        <div class="form-group">-->
-                                    <!--                                            <label for="username_create" class="form-control-label">username:</label>-->
-                                    <!--                                            <input type="text" class="form-control" id="username_create"-->
-                                    <!--                                                   name="username">-->
-                                    <!--                                        </div>-->
-                                    <!--                                        <div class="form-group">-->
-                                    <!--                                            <label for="age_create" class="form-control-label">age:</label>-->
-                                    <!--                                            <input type="text" class="form-control" id="age_create" name="age">-->
-                                    <!--                                        </div>-->
-                                    <!--                                        <div class="form-group">-->
-                                    <!--                                            <label for="password_create" class="form-control-label">password:</label>-->
-                                    <!--                                            <input type="text" class="form-control" id="password_create"-->
-                                    <!--                                                   name="password">-->
-                                    <!--                                        </div>-->
-                                    <!--                                        <div class="form-group">-->
-                                    <!--                                            <label for="roles">Role</label>-->
-                                    <!--                                            <select multiple class="form-control" id="roles" name="roles">-->
-                                    <!--                                                <option value="ROLE_USER">USER</option>-->
-                                    <!--                                                <option value="ROLE_ADMIN">ADMIN</option>-->
-                                    <!--                                            </select>-->
-                                    <!--                                        </div>-->
-                                    <!--                                        <button type="submit" class="btn btn-success">Create user</button>-->
-                                    <!--                                        <br>-->
-                                    <!--                                    </form>-->
+
+                                            <form id="defaultSomeForm">
+                                                <input class="form-control" id="AddNewUserUsername" type="text" placeholder="username"><br>
+                                                <input class="form-control" id="AddNewUserPassword" type="password" placeholder="password"><br>
+                                                <input class="form-control" id="AddNewUserName" type="text" placeholder="name"><br>
+                                                <input class="form-control" id="AddNewUserLastName" type="text" placeholder="lastName"><br>
+                                                <input class="form-control" id="AddNewUserAge" type="number" placeholder="age"><br>
+                                            </form><br>
+                                                <button class="btn btn-primary mb-2" type="button" id="addNewUserButton">Add new user</button>
                                 </div>
                             </div>
                         </h6>
@@ -137,9 +113,6 @@
         </div>
     </div>
 </div>
-
-
-
 
 <script src="webjars/jquery/3.5.1/jquery.js"></script>
 <script src="webjars/popper.js/1.16.0/umd/popper.js"></script>

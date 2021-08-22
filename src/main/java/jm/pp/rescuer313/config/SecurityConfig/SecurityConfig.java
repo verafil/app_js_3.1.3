@@ -39,13 +39,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin()
                 .successHandler(successUserHandler)
                 .permitAll();
+
         http.logout()
                 .permitAll()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout")
+                .logoutSuccessUrl("/login")
                 .and().csrf().disable();
+
         http.authorizeRequests()
-                .antMatchers("/").authenticated();
+                .antMatchers("/").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/api/users/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN");
     }
 
     @Autowired

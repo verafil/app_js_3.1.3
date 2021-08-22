@@ -2,6 +2,7 @@ package jm.pp.rescuer313.controller;
 
 import jm.pp.rescuer313.ExeptionHandler.DataInfoHandler;
 import jm.pp.rescuer313.ExeptionHandler.UserWithSuchLoginExist;
+import jm.pp.rescuer313.dto.UserDto;
 import jm.pp.rescuer313.model.Role;
 import jm.pp.rescuer313.model.User;
 import jm.pp.rescuer313.service.UserService;
@@ -47,7 +48,7 @@ public class RestUserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<DataInfoHandler> apiAddNewUser(@Valid @RequestBody User user,
+    public ResponseEntity<DataInfoHandler> apiAddNewUser(@Valid @RequestBody UserDto user,
                                                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String error = getErrorsFromBindingResult(bindingResult);
@@ -63,7 +64,7 @@ public class RestUserController {
 
     @PutMapping("/users/{id}")
     public ResponseEntity<DataInfoHandler> apiUpdateUser(@PathVariable("id") long id,
-                                              @RequestBody @Valid User user,
+                                              @RequestBody @Valid UserDto user,
                                               BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String error = getErrorsFromBindingResult(bindingResult);
