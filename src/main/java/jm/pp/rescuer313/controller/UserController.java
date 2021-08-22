@@ -26,12 +26,9 @@ public class UserController {
         return "pages/index";
     }
 
-        @GetMapping("/user/{id}")
+    @GetMapping("/user/{id}")
     public String personalPageUser(@PathVariable("id") int id, Model model) {
-        User user = userService.findUserById(id);
-        model.addAttribute("user", user);
-        model.addAttribute("roles", user.getRoles());
-        return "pages/user-personal";
+        return "/pages/user-personal";
     }
 
 }

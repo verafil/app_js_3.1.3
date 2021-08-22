@@ -7,6 +7,7 @@ import jm.pp.rescuer313.model.Role;
 import jm.pp.rescuer313.model.User;
 import jm.pp.rescuer313.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -87,7 +88,7 @@ public class RestUserController {
     private String getErrorsFromBindingResult(BindingResult bindingResult) {
         return bindingResult.getFieldErrors()
                 .stream()
-                .map(x -> x.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining("; "));
     }
 

@@ -8,23 +8,19 @@ $(async function () {
 async function menu() {
     let list = $('#list-group');
     let user_aut = document.getElementById("aut").innerText
-   // let uset_aut_id =''
     user_aut = user_aut.substring(0, user_aut.indexOf(' '))
-    //alert(user_aut)
     await userFetchService.findAllUsers()
         .then(res => res.json())
         .then(users => {
             users.forEach(user => {
-                //alert('!')
                 if (user.username === user_aut) {
-                  let  user_aut_id = user.id
+                    let user_aut_id = user.id
                     list.append(`
-<a href="admin" class="list-group-item list-group-item-action active">Admin</a>
-<a href="/user/${user_aut_id}" class="list-group-item list-group-item-action">User</a>`)
+                    <a href="admin" class="list-group-item list-group-item-action active">Admin</a>
+                    <a href="/user/${user_aut_id}" class="list-group-item list-group-item-action">User</a>`)
                 }
             })
         })
-   // list.append(`$(<a href="@{/user/{id}(id=${uset_aut_id})}" class="list-group-item list-group-item-action active">User</a>`)
 }
 
 const userFetchService = {
@@ -36,8 +32,16 @@ const userFetchService = {
     findAllUsers: async () => await fetch('api/users'),
     findAllRoles: async () => await fetch('api/roles'),
     findOneUser: async (id) => await fetch(`api/users/${id}`),
-    addNewUser: async (user) => await fetch('api/users', {method: 'POST', headers: userFetchService.head, body: JSON.stringify(user)}),
-    updateUser: async (user, id) => await fetch(`api/users/${id}`, {method: 'PUT', headers: userFetchService.head, body: JSON.stringify(user)}),
+    addNewUser: async (user) => await fetch('api/users', {
+        method: 'POST',
+        headers: userFetchService.head,
+        body: JSON.stringify(user)
+    }),
+    updateUser: async (user, id) => await fetch(`api/users/${id}`, {
+        method: 'PUT',
+        headers: userFetchService.head,
+        body: JSON.stringify(user)
+    }),
     deleteUser: async (id) => await fetch(`api/users/${id}`, {method: 'DELETE', headers: userFetchService.head})
 }
 
@@ -136,7 +140,7 @@ async function editUser(modal, id) {
     roles.then(rolesObject => {
         let selectRoles = `<select multiple class="form-control" id="rolesEdit" name="roles">`
         rolesObject.forEach(r => {
-             selectRoles += `$(
+            selectRoles += `$(
                  <option value="${r.name}">"${r.name.replace('ROLE_', '')}"</option>     
                  )`
         })
@@ -179,15 +183,6 @@ async function editUser(modal, id) {
         if (response.ok) {
             getTableWithUsers();
             modal.modal('hide');
-        } else {
-            let body = await response.json();
-            let alert = `<div class="alert alert-danger alert-dismissible fade show col-12" role="alert" id="sharaBaraMessageError">
-                            ${body.info}
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>`;
-            modal.find('.modal-body').prepend(alert);
         }
     })
 }
@@ -250,7 +245,7 @@ async function addNewUser() {
         formNewUser.append(selectRoles);
     })
 
-    $('#addNewUserButton').click(async () =>  {
+    $('#addNewUserButton').click(async () => {
         let addUserForm = $('#defaultSomeForm')
         let username = addUserForm.find('#AddNewUserUsername').val().trim();
         let password = addUserForm.find('#AddNewUserPassword').val().trim();
@@ -275,15 +270,6 @@ async function addNewUser() {
             addUserForm.find('#AddNewUserName').val('');
             addUserForm.find('#AddNewUserLastName').val('');
             $('#navTabs a[href="#adminTable"]').tab('show')
-        } else {
-            let body = await response.json();
-            let alert = `<div class="alert alert-danger alert-dismissible fade show col-12" role="alert" id="sharaBaraMessageError">
-                            ${body.info}
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>`;
-            addUserForm.prepend(alert)
         }
     })
 }

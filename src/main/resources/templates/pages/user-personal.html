@@ -12,7 +12,7 @@
     </STYLE>
 </head>
 <body>
-<nav class="navbar navbar-dark bg-dark">
+<nav class="navbar navbar-dark bg-dark" id="aut">
     <a class="navbar-brand" th:text="${#authentication.name+' with roles: '+#authentication.authorities.toArray()}">Navbar</a>
     <form th:action="@{/logout}" method="post">
         <button type="submit" class="btn btn-dark">Logout</button>
@@ -23,18 +23,18 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-1" style="background: white">
-            <nav class="list-group">
-                <td th:each="role : ${roles}">
-                    <a th:if="${role.getName.equals('ROLE_ADMIN')}"
-                       href="/admin" class="list-group-item list-group-item-action">Admin</a>
-                </td>
-                <a href="#newUser" class="list-group-item list-group-item-action active">User</a>
+            <nav class="list-group" id="list-group">
+<!--                <td th:each="role : ${roles}">-->
+<!--                    <a th:if="${role.getName.equals('ROLE_ADMIN')}"-->
+<!--                       href="/admin" class="list-group-item list-group-item-action">Admin</a>-->
+<!--                </td>-->
+<!--                <a href="#newUser" class="list-group-item list-group-item-action active">User</a>-->
             </nav>
         </div>
 
         <div class="col-sm-11">
             <H2>User information-page</H2>
-            <table class="table table-hover" style="background: white">
+            <table class="table table-hover" style="background: white" id="adminTable">
                 <H4>About user</H4>
                 <thead>
                 <tr>
@@ -47,15 +47,7 @@
                 </tr>
                 </thead>
 
-                <tbody>
-                <tr>
-                    <td><a th:href="@{/user/{id}(id=${user.getId()})}" th:text="${user.getId()}">id</a></td>
-                    <td th:text="${user.getName()}"></td>
-                    <td th:text="${user.getLastName()}"></td>
-                    <td th:text="${user.getUsername()}"></td>
-                    <td th:text="${user.getAge()}"></td>
-                    <td th:text="${user.toStringRoles(user.getRoles())}"></td>
-                </tr>
+                <tbody id="data">
                 </tbody>
 
             </table>
@@ -64,8 +56,13 @@
     </div>
 </div>
 
-<!--<script src="webjars/jquery/3.5.1/jquery.js"></script>-->
-<!--<script src="webjars/popper.js/1.16.0/umd/popper.js"></script>-->
-<!--<script src="webjars/bootstrap/4.5.3/js/bootstrap.min.js"></script>-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+        crossorigin="anonymous"></script>
+<script src="/js/user-personal.js"></script>
 </body>
 </html>
