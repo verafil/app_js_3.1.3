@@ -58,13 +58,13 @@ async function getTableWithUsers() {
                     userRoles += r.name.replace('ROLE_', '') + ' '
                 })
                 let tableFilling = `$(
-                        <tr>
+                        <tr id="${user.id}">
                             <td>${user.id}</td>
-                            <td>${user.username}</td>
-                            <td>${user.lastName}</td>
-                            <td>${user.name}</td>
-                            <td>${user.age}</td>  
-                            <td>${userRoles}</td>    
+                            <td id="username${user.id}">${user.username}</td>
+                            <td id="lastName${user.id}">${user.lastName}</td>
+                            <td id="name${user.id}">${user.name}</td>
+                            <td id="age${user.id}">${user.age}</td>  
+                            <td id="userRoles${user.id}">${userRoles}</td>    
                                <td>
                                 <button data-userid="${user.id}" data-action="edit" class="btn btn-primary eBtn" 
                                 data-toggle="modal" data-target="#someDefaultModal">Edit</button>
@@ -181,7 +181,21 @@ async function editUser(modal, id) {
         const response = await userFetchService.updateUser(data, id);
 
         if (response.ok) {
-            getTableWithUsers();
+            //getTableWithUsers();
+            let username = modal.find("#username").val().trim();
+            let name = modal.find("#name").val().trim();
+            let lastName = modal.find("#lastName").val().trim();
+            let age = modal.find("#age").val().trim();
+            let roles = modal.find("#rolesEdit").val();
+            document.getElementById("username" + id).textContent = username
+            document.getElementById("name" + modal.find("#id").val().trim()).textContent = name
+            document.getElementById("lastName" + modal.find("#id").val().trim()).textContent = lastName
+            document.getElementById("age" + modal.find("#id").val().trim()).textContent = age
+            let userRoles = ""
+            roles.forEach((r) => {
+                userRoles += r.replace('ROLE_', '') + ' '
+            })
+            document.getElementById("userRoles" + modal.find("#id").val().trim()).textContent = userRoles
             modal.modal('hide');
         }
     })
@@ -223,7 +237,7 @@ async function deleteUser(modal, id) {
         let id = modal.find("#id").val().trim();
         const response = await userFetchService.deleteUser(id);
         if (response.ok) {
-            await getTableWithUsers();
+           $('#data').find('#'+ modal.find("#id").val().trim()).remove()
             modal.modal('hide');
         }
     })
