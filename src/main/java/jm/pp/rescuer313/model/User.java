@@ -29,7 +29,7 @@ public class User implements UserDetails {
     @Column
     private Integer age;
 
-    @ManyToMany(cascade=CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ManyToMany(cascade=CascadeType.MERGE, fetch = FetchType.LAZY)
     private Set<Role> roles;
 
     public User() {

@@ -182,20 +182,20 @@ async function editUser(modal, id) {
 
         if (response.ok) {
             //getTableWithUsers();
-            let username = modal.find("#username").val().trim();
-            let name = modal.find("#name").val().trim();
-            let lastName = modal.find("#lastName").val().trim();
-            let age = modal.find("#age").val().trim();
-            let roles = modal.find("#rolesEdit").val();
+            // let username = modal.find("#username").val().trim();
+            // let name = modal.find("#name").val().trim();
+            // let lastName = modal.find("#lastName").val().trim();
+            // let age = modal.find("#age").val().trim();
+            // let roles = modal.find("#rolesEdit").val();
             document.getElementById("username" + id).textContent = username
-            document.getElementById("name" + modal.find("#id").val().trim()).textContent = name
-            document.getElementById("lastName" + modal.find("#id").val().trim()).textContent = lastName
-            document.getElementById("age" + modal.find("#id").val().trim()).textContent = age
+            document.getElementById("name"  + id).textContent = name
+            document.getElementById("lastName"  + id).textContent = lastName
+            document.getElementById("age"  + id).textContent = age
             let userRoles = ""
             roles.forEach((r) => {
                 userRoles += r.replace('ROLE_', '') + ' '
             })
-            document.getElementById("userRoles" + modal.find("#id").val().trim()).textContent = userRoles
+            document.getElementById("userRoles" + id).textContent = userRoles
             modal.modal('hide');
         }
     })
